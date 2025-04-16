@@ -4,12 +4,15 @@ import 'package:go_router/go_router.dart';
 import 'package:phd_monitoring_mobile_app/constants/url.dart';
 import 'package:phd_monitoring_mobile_app/functions/fetch_data.dart';
 import 'package:phd_monitoring_mobile_app/functions/format_date_time.dart';
-import 'package:phd_monitoring_mobile_app/model/user_role.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/widgets/build_detail_row.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/widgets/build_faculty_list.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/collapsible_card.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/form_time_line_widget.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/widgets/give_recommendation_widget.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/recommended_widget.dart';
 import 'package:phd_monitoring_mobile_app/theme/app_colors.dart';
 
+//Manage form not yet assigned
 class SupervisorAllocationForm extends StatefulWidget {
   const SupervisorAllocationForm({
     super.key,
@@ -30,20 +33,6 @@ class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
   Map<String, dynamic> data = {};
   bool _isLoading = true;
   String _errorMessage = '';
-
-  // Map UserRole to string roles used in hierarchy
-  String _mapUserRoleToString(UserRole? role) {
-    switch (role) {
-      case UserRole.student:
-        return 'student';
-      case UserRole.phdCoordinator:
-        return 'phd_coordinator';
-      case UserRole.hod:
-        return 'hod';
-      default:
-        return 'student'; // Default fallback
-    }
-  }
 
   @override
   void initState() {
@@ -86,23 +75,22 @@ class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
       case 'student':
         return CollapsibleCard(
           title: "Student Review",
-          color: Colors.black,
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDetailRow(
+              buildDetailRow(
                 Icons.assignment_ind,
                 'Roll Number',
                 data['roll_no'].toString(),
               ),
-              _buildDetailRow(Icons.person, 'Name', data['name']),
-              _buildDetailRow(
+              buildDetailRow(Icons.person, 'Name', data['name']),
+              buildDetailRow(
                 Icons.calendar_today,
                 'Admission Date',
                 formatDateTime(data['date_of_registration']),
               ),
-              _buildDetailRow(Icons.email, 'Email', data['email']),
-              _buildDetailRow(Icons.phone, 'Mobile', data['phone'].toString()),
+              buildDetailRow(Icons.email, 'Email', data['email']),
+              buildDetailRow(Icons.phone, 'Mobile', data['phone'].toString()),
               const SizedBox(height: 16),
               const Text(
                 'Research Areas',
@@ -127,16 +115,54 @@ class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
         );
 
       case 'phd_coordinator':
-        return RecommendedWidget(
-          title: 'PhD Coordinator Review',
-          approval: data['approvals'][role],
-          comment: data['comments'][role] ?? 'N/A',
+        return CollapsibleCard(
+          title: "PhD Coordinator Review",
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Supervisors',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              buildFacultList(
+                data['supervisors']
+                    .map((element) => element['name'])
+                    .toList()
+                    .cast<String>(),
+              ),
+            ],
+          ),
         );
       case 'hod':
         return RecommendedWidget(
           title: 'HOD Review',
           approval: data['approvals'][role],
           comment: data['comments'][role] ?? 'N/A',
+        );
+      default:
+        return const Center(child: Text('Invalid role'));
+    }
+  }
+
+  Widget buildCurrentRoleWidgetsFor(String role) {
+    switch (role) {
+      case 'student':
+        return CollapsibleCard(
+          title: "Student Review",
+          content: Center(child: Text("Fill the form from the website")),
+        );
+      case 'phd_coordinator':
+        return CollapsibleCard(
+          title: "PhD Coordinator Review",
+          content: Center(child: Text("Fill the form from the website")),
+        );
+      case 'hod':
+        return GiveRecommendationWidget(
+          postition: role,
+          formType: widget.formType,
+          formId: widget.formId,
+          onSubmit: _fetchFormData,
         );
       default:
         return const Center(child: Text('Invalid role'));
@@ -157,9 +183,7 @@ class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
         widgets.add(buildRoleWidgetsFor(position));
       } else {
         if (position == data['stage']) {
-          widgets.add(
-            buildCurrentStageWidgets(position, widget.formType, widget.formId),
-          );
+          widgets.add(buildCurrentRoleWidgetsFor(position));
         } else {
           widgets.add(buildRoleWidgetsFor(position));
         }
@@ -192,47 +216,26 @@ class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
                   style: const TextStyle(color: Colors.red),
                 ),
               )
-              : SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(20.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: widgets,
+              : RefreshIndicator(
+                onRefresh: _fetchFormData,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: EdgeInsets.all(20.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: widgets,
+                    ),
                   ),
                 ),
               ),
     );
   }
-}
 
-Widget _buildDetailRow(IconData icon, String label, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8),
-    child: Row(
-      children: [
-        Icon(icon, size: 20, color: Colors.grey[600]),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              ),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }
 
 Widget _buildChipsList(List<String> items) {
@@ -254,170 +257,5 @@ Widget _buildChipsList(List<String> items) {
             ),
           );
         }).toList(),
-  );
-}
-
-Widget buildFacultList(List<String> faculty) {
-  return ListView.builder(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    itemCount: faculty.length,
-    itemBuilder: (context, index) {
-      return ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.black.withOpacity(0.1),
-          child: Text(
-            faculty[index][0],
-            style: const TextStyle(color: Colors.black),
-          ),
-        ),
-        title: Text(
-          faculty[index],
-          overflow: TextOverflow.ellipsis,
-          maxLines: 2,
-        ),
-        contentPadding: EdgeInsets.zero,
-      );
-    },
-  );
-}
-
-Widget buildCurrentStageWidgets(
-  String postition,
-  String formType,
-  String formId,
-) {
-  TextEditingController commentController =
-      TextEditingController(); // Initialize the controller
-  return StatefulBuilder(
-    builder: (context, setState) {
-      bool isRecommended = false; // Default to Not Recommended
-
-      return CollapsibleCard(
-        title: 'Your Recommendation',
-        color: Colors.orange,
-        isAlwaysExpanded: true,
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Decision',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() => isRecommended = true);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      side: BorderSide(color: Colors.green),
-                      backgroundColor:
-                          isRecommended ? Colors.green.withOpacity(0.1) : null,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'Recommend',
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() => isRecommended = false);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      side: BorderSide(color: Colors.red),
-                      backgroundColor:
-                          !isRecommended ? Colors.red.withOpacity(0.1) : null,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'Not Recommended',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Comments',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              maxLines: 4,
-              controller: commentController,
-              decoration: InputDecoration(
-                hintText: 'Enter your comments here...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  final response = await fetchData(
-                    url: '$SERVER_URL/forms/$formType/$formId',
-                    method: 'POST',
-                    body: {
-                      'approval': isRecommended,
-                      'rejection': !isRecommended,
-                      'comments': commentController.text,
-                      'rejected': !isRecommended,
-                    },
-                    context: context,
-                  );
-
-                  if (response['success']) {
-                    // handle success, e.g. show a toast or navigate
-                    print('Allocation updated successfully.');
-                  } else {
-                    // handle error
-                    print(
-                      'Failed to update allocation: ${response['response']}',
-                    );
-                  }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Recommendation submitted'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'Submit Recommendation',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
   );
 }

@@ -38,10 +38,7 @@ class StudentDetailsPage extends StatelessWidget {
                 children: [
                   const Text(
                     'Application Progress',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
                   _buildStatusTimeline(),
@@ -57,16 +54,24 @@ class StudentDetailsPage extends StatelessWidget {
                   // Student Section
                   CollapsibleCard(
                     title: 'Student Details',
-                    color: Colors.green,
                     content: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildDetailRow(
-                            Icons.assignment_ind, 'Roll Number', '102203465'),
+                          Icons.assignment_ind,
+                          'Roll Number',
+                          '102203465',
+                        ),
                         _buildDetailRow(
-                            Icons.person, 'Name', 'Akarsh Srivastava'),
-                        _buildDetailRow(Icons.calendar_today, 'Admission Date',
-                            'March 31, 2024'),
+                          Icons.person,
+                          'Name',
+                          'Akarsh Srivastava',
+                        ),
+                        _buildDetailRow(
+                          Icons.calendar_today,
+                          'Admission Date',
+                          'March 31, 2024',
+                        ),
                         _buildDetailRow(Icons.email, 'Email', 'stu5@gmail.com'),
                         _buildDetailRow(Icons.phone, 'Mobile', '941548683'),
                         const SizedBox(height: 16),
@@ -104,7 +109,6 @@ class StudentDetailsPage extends StatelessWidget {
                   // PhD Coordinator Section
                   CollapsibleCard(
                     title: 'PhD Coordinator Review',
-                    color: Colors.blue,
                     content: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -121,7 +125,6 @@ class StudentDetailsPage extends StatelessWidget {
                   // HOD Section
                   CollapsibleCard(
                     title: 'HOD Review',
-                    color: Colors.indigo,
                     content: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -146,7 +149,6 @@ class StudentDetailsPage extends StatelessWidget {
   }
 }
 
-
 class TextOverflowHelper {
   static String truncateWithEllipsis(String text, int maxLength) {
     return text.length <= maxLength
@@ -159,19 +161,20 @@ Widget _buildChipsList(List<String> items) {
   return Wrap(
     spacing: 8,
     runSpacing: 8,
-    children: items.map((item) {
-      return Container(
-        constraints: const BoxConstraints(maxWidth: 200),
-        child: Chip(
-          label: Text(
-            item,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: Colors.green),
-          ),
-          backgroundColor: Colors.green.withOpacity(0.1),
-        ),
-      );
-    }).toList(),
+    children:
+        items.map((item) {
+          return Container(
+            constraints: const BoxConstraints(maxWidth: 200),
+            child: Chip(
+              label: Text(
+                item,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: Colors.green),
+              ),
+              backgroundColor: Colors.green.withOpacity(0.1),
+            ),
+          );
+        }).toList(),
   );
 }
 
@@ -211,17 +214,13 @@ Widget _buildRecommendationForm() {
 
       return CollapsibleCard(
         title: 'Your Recommendation',
-        color: Colors.orange,
         isAlwaysExpanded: true,
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               'Decision',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 12),
             Row(
@@ -272,10 +271,7 @@ Widget _buildRecommendationForm() {
             const SizedBox(height: 20),
             const Text(
               'Comments',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 8),
             TextField(
@@ -429,18 +425,10 @@ Widget _buildStatusWithDate(String status, DateTime date) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          status,
-          style: const TextStyle(
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        Text(status, style: const TextStyle(fontWeight: FontWeight.w500)),
         Text(
           '${date.day}/${date.month}/${date.year}',
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 12,
-          ),
+          style: TextStyle(color: Colors.grey[600], fontSize: 12),
         ),
       ],
     ),
@@ -455,10 +443,7 @@ Widget _buildCommentSection(String comment) {
       const SizedBox(height: 16),
       const Text(
         'Comments',
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
       ),
       const SizedBox(height: 8),
       Container(
@@ -488,10 +473,7 @@ Widget _buildDetailRow(IconData icon, String label, String value) {
             children: [
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
               Text(
                 value,

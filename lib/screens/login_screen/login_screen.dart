@@ -176,7 +176,8 @@ class DummyLoginScreen extends StatefulWidget {
 
 class _DummyLoginScreenState extends State<DummyLoginScreen> {
   final List<Map<String, String>> testUsers = [
-    {'label': 'Student', 'email': 'oj@g.com', 'password': 'Password@123'},
+    {'label': 'Student 1', 'email': 'oj@g.com', 'password': 'Password@123'},
+    {'label': 'Student 2', 'email': 'ab@gmail.com', 'password': 'Password@123'},
     {
       'label': 'Supervisor',
       'email': '1000927@thapar.edu',
@@ -250,23 +251,33 @@ class _DummyLoginScreenState extends State<DummyLoginScreen> {
           children: [
             const Text('Select a test user:', style: TextStyle(fontSize: 18)),
             SizedBox(height: 16.h),
-            ...testUsers.map((user) {
-              final isSelected = selectedEmail == user['email'];
-              return ListTile(
-                title: Text(user['label'] ?? ''),
-                subtitle: Text(user['email'] ?? ''),
-                trailing:
-                    isSelected
-                        ? const Icon(Icons.check_circle, color: Colors.green)
-                        : null,
-                onTap: () {
-                  setState(() {
-                    selectedEmail = user['email'];
-                    selectedPassword = user['password'];
-                  });
+            Expanded(
+              child: ListView.builder(
+                itemCount: testUsers.length,
+                itemBuilder: (context, index) {
+                  final user = testUsers[index];
+                  final isSelected = selectedEmail == user['email'];
+                  return ListTile(
+                    title: Text(user['label'] ?? ''),
+                    subtitle: Text(user['email'] ?? ''),
+                    trailing:
+                        isSelected
+                            ? const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                            )
+                            : null,
+                    onTap: () {
+                      setState(() {
+                        selectedEmail = user['email'];
+                        selectedPassword = user['password'];
+                      });
+                    },
+                  );
                 },
-              );
-            }),
+              ),
+            ),
+
             const Spacer(),
             SizedBox(
               width: double.infinity,

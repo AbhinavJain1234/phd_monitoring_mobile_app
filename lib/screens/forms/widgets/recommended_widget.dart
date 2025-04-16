@@ -16,7 +16,6 @@ class RecommendedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CollapsibleCard(
       title: 'PhD Coordinator Review',
-      color: Colors.black,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

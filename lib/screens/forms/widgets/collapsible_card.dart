@@ -1,15 +1,13 @@
-
 import 'package:flutter/material.dart';
+
 class CollapsibleCard extends StatefulWidget {
   final String title;
-  final Color color;
   final Widget content;
   final bool isAlwaysExpanded;
 
   const CollapsibleCard({
     super.key,
     required this.title,
-    required this.color,
     required this.content,
     this.isAlwaysExpanded = false,
   });
@@ -39,22 +37,24 @@ class _CollapsibleCardState extends State<CollapsibleCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           InkWell(
-            onTap: widget.isAlwaysExpanded
-                ? null
-                : () {
-                    setState(() {
-                      _isExpanded = !_isExpanded;
-                    });
-                  },
+            onTap:
+                widget.isAlwaysExpanded
+                    ? null
+                    : () {
+                      setState(() {
+                        _isExpanded = !_isExpanded;
+                      });
+                    },
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: widget.color.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.1),
                 borderRadius: BorderRadius.vertical(
                   top: const Radius.circular(12),
-                  bottom: (widget.isAlwaysExpanded || _isExpanded)
-                      ? Radius.zero
-                      : const Radius.circular(12),
+                  bottom:
+                      (widget.isAlwaysExpanded || _isExpanded)
+                          ? Radius.zero
+                          : const Radius.circular(12),
                 ),
               ),
               child: Row(
@@ -63,7 +63,7 @@ class _CollapsibleCardState extends State<CollapsibleCard> {
                     width: 4,
                     height: 16,
                     decoration: BoxDecoration(
-                      color: widget.color,
+                      color: Colors.black,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -74,7 +74,7 @@ class _CollapsibleCardState extends State<CollapsibleCard> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: widget.color,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -83,17 +83,14 @@ class _CollapsibleCardState extends State<CollapsibleCard> {
                       _isExpanded
                           ? Icons.keyboard_arrow_up
                           : Icons.keyboard_arrow_down,
-                      color: widget.color,
+                      color: Colors.black,
                     ),
                 ],
               ),
             ),
           ),
           if (widget.isAlwaysExpanded || _isExpanded)
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: widget.content,
-            ),
+            Padding(padding: const EdgeInsets.all(16), child: widget.content),
         ],
       ),
     );
