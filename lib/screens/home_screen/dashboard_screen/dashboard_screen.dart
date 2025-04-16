@@ -4,6 +4,7 @@ import 'package:phd_monitoring_mobile_app/functions/fetch_data.dart';
 import 'package:phd_monitoring_mobile_app/model/user_role.dart';
 import 'package:phd_monitoring_mobile_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
+
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -50,9 +51,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         userRole == UserRole.dordc ||
         userRole == UserRole.director;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard')),
-      body: Center(child: Text("DASHBOARD")),
-    );
+    return Scaffold(body: Center(child: Text("DASHBOARD")));
   }
 }

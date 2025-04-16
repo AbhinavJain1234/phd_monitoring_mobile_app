@@ -1,6 +1,9 @@
 //optimized
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:phd_monitoring_mobile_app/constants/url.dart';
+import 'package:phd_monitoring_mobile_app/functions/fetch_data.dart';
+import 'package:phd_monitoring_mobile_app/screens/home_screen/app_drawer/app_drawer.dart';
 import 'package:phd_monitoring_mobile_app/theme/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -36,6 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
         : _buildScaffold(currentIndex: 0);
   }
 
+  String selectedRole = 'supervisor';
+
   Scaffold _buildScaffold({required int currentIndex}) {
     return Scaffold(
       appBar: AppBar(
@@ -43,6 +48,48 @@ class _HomeScreenState extends State<HomeScreen> {
         foregroundColor: Colors.white,
         title: Text(currentIndex == 0 ? 'Dashboard' : 'Notifications'),
         actions: [
+          // You can move this to your state if using StatefulWidget
+          Tooltip(
+            message: 'Switch Role',
+            child: PopupMenuButton<String>(
+              icon: const Icon(Icons.person_outline, color: Colors.white),
+              onSelected: (value) async {
+                setState(() {
+                  selectedRole = value;
+                });
+
+                final response = await fetchData(
+                  url: '$SERVER_URL/switch-role',
+                  method: 'POST',
+                  body: {'role': value},
+                  context: context,
+                );
+
+                if (response['success']) {
+                  print('Role switched to $value');
+                } else {
+                  print('Failed to switch role: ${response['response']}');
+                }
+              },
+              itemBuilder:
+                  (context) => [
+                    const PopupMenuItem(
+                      value: 'faculty',
+                      child: Text('Supervisor'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'phd_coordinator',
+                      child: Text('PhD Coordinator'),
+                    ),
+                    const PopupMenuItem(value: 'hod', child: Text('HOD')),
+                    const PopupMenuItem(
+                      value: 'doctoral',
+                      child: Text('Doctoral Committee'),
+                    ),
+                  ],
+            ),
+          ),
+
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () => context.push('/profile'),
@@ -56,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      // drawer: AppDrawer(onLogout: widget.onLogout),
+      drawer: AppDrawer(onLogout: widget.onLogout),
       body: widget.child,
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: AppColors.primary,

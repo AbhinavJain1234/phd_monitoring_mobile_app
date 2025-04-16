@@ -1,47 +1,228 @@
+// import 'package:flutter/material.dart';
+// import 'package:go_router/go_router.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:phd_monitoring_mobile_app/constants/url.dart';
+// import 'package:phd_monitoring_mobile_app/functions/fetch_data.dart';
+// import 'package:phd_monitoring_mobile_app/providers/user_provider.dart';
+// import 'package:phd_monitoring_mobile_app/theme/app_colors.dart';
+// import 'package:phd_monitoring_mobile_app/widgets/build_test_feild.dart';
+// import 'package:provider/provider.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// //optimized
+// //just can furthur optimize the button
+// class LoginScreen extends StatefulWidget {
+//   const LoginScreen({super.key});
+
+//   @override
+//   State<LoginScreen> createState() => _LoginScreenState();
+// }
+
+// class _LoginScreenState extends State<LoginScreen> {
+//   final _formKey = GlobalKey<FormState>();
+//   final _emailController = TextEditingController();
+//   final _passwordController = TextEditingController();
+//   bool _isLoading = false;
+
+//   @override
+//   void dispose() {
+//     _emailController.dispose();
+//     _passwordController.dispose();
+//     super.dispose();
+//   }
+
+//   Future<void> _handleLogin() async {
+//     setState(() => _isLoading = true);
+//     try {
+//       final response = await fetchData(
+//         url: '$SERVER_URL/login',
+//         method: 'POST',
+//         body: {'email': _emailController.text, 'password': "Password@123"},
+//         showToast: true,
+//         context: context,
+//       );
+//       print(response);
+
+//       if (!mounted) return;
+
+//       if (response['success']) {
+//         final userProvider = Provider.of<UserProvider>(context, listen: false);
+//         await userProvider.setUser(
+//           response['response']['user'],
+//           response['response']['token'],
+//         );
+
+//         if (mounted) context.go('/');
+//       }
+//     } finally {
+//       if (mounted) {
+//         setState(() => _isLoading = false);
+//       }
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final padding = MediaQuery.of(context).padding;
+
+//     return Scaffold(
+//       backgroundColor: const Color(0xFFF8F9FA), // Light grayish background
+//       body: SafeArea(
+//         child: Padding(
+//           padding: EdgeInsets.symmetric(
+//             horizontal: 100.w,
+//             vertical: padding.top + 24.h,
+//           ),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Text(
+//                 'Welcome\nBack',
+//                 style: TextStyle(
+//                   fontSize: 120.sp,
+//                   fontWeight: FontWeight.bold,
+//                   color: AppColors.primary,
+//                   height: 1.2,
+//                 ),
+//               ),
+//               SizedBox(height: 40.h),
+//               Form(
+//                 key: _formKey,
+//                 child: Column(
+//                   children: [
+//                     buildTextField(
+//                       controller: _emailController,
+//                       label: 'Email',
+//                       hint: 'Enter your email',
+//                       icon: Icons.email_outlined,
+//                     ),
+//                     SizedBox(height: 20.h),
+//                     buildTextField(
+//                       controller: _passwordController,
+//                       label: 'Password',
+//                       hint: 'Enter your password',
+//                       icon: Icons.lock_outline,
+//                       isPassword: true,
+//                     ),
+//                     SizedBox(height: 32.h),
+//                     SizedBox(
+//                       width: double.infinity,
+//                       child: ElevatedButton(
+//                         onPressed:
+//                             _isLoading
+//                                 ? null
+//                                 : () {
+//                                   if (_formKey.currentState?.validate() ??
+//                                       false) {
+//                                     _handleLogin();
+//                                   }
+//                                 },
+//                         style: ElevatedButton.styleFrom(
+//                           backgroundColor: AppColors.primary,
+//                           foregroundColor: Colors.white,
+//                           elevation: 2,
+//                           shadowColor: AppColors.primary.withOpacity(0.3),
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(16.r),
+//                           ),
+//                         ),
+//                         child:
+//                             _isLoading
+//                                 ? SizedBox(
+//                                   height: 40.h,
+//                                   width: 40.w,
+//                                   child: const CircularProgressIndicator(
+//                                     valueColor: AlwaysStoppedAnimation<Color>(
+//                                       Colors.white,
+//                                     ),
+//                                     strokeWidth: 2,
+//                                   ),
+//                                 )
+//                                 : Text(
+//                                   'Sign In',
+//                                   style: GoogleFonts.poppins(
+//                                     fontSize: 40.sp,
+//                                     fontWeight: FontWeight.w500,
+//                                   ),
+//                                 ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:phd_monitoring_mobile_app/constants/url.dart';
 import 'package:phd_monitoring_mobile_app/functions/fetch_data.dart';
 import 'package:phd_monitoring_mobile_app/providers/user_provider.dart';
-import 'package:phd_monitoring_mobile_app/theme/app_colors.dart';
-import 'package:phd_monitoring_mobile_app/widgets/build_test_feild.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-//optimized
-//just can furthur optimize the button
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class DummyLoginScreen extends StatefulWidget {
+  const DummyLoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<DummyLoginScreen> createState() => _DummyLoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+class _DummyLoginScreenState extends State<DummyLoginScreen> {
+  final List<Map<String, String>> testUsers = [
+    {'label': 'Student', 'email': 'oj@g.com', 'password': 'Password@123'},
+    {
+      'label': 'Supervisor',
+      'email': '1000927@thapar.edu',
+      'password': 'Password@123',
+    },
+    {'label': 'HOD', 'email': '1000927@thapar.edu', 'password': 'Password@123'},
+    {
+      'label': 'PhD COordinator',
+      'email': '6615935@thapar.edu',
+      'password': 'Password@123',
+    },
+    {
+      'label': 'Doc1',
+      'email': '1000678@thapar.edu',
+      'password': 'Password@123',
+    },
+    {
+      'label': 'Doc2',
+      'email': '1000619@thapar.edu',
+      'password': 'Password@123',
+    },
+    {'label': 'DRA', 'email': 'dra@gmail.com', 'password': 'Password@123'},
+    {'label': 'DoRDC', 'email': 'dordc@gmail.com', 'password': 'Password@123'},
+    {
+      'label': 'Director',
+      'email': 'cord@gmail.com',
+      'password': 'Password@123',
+    },
+  ];
+
+  String? selectedEmail;
+  String? selectedPassword;
   bool _isLoading = false;
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
   Future<void> _handleLogin() async {
+    if (selectedEmail == null || selectedPassword == null) return;
+
     setState(() => _isLoading = true);
     try {
       final response = await fetchData(
         url: '$SERVER_URL/login',
         method: 'POST',
-        body: {'email': _emailController.text, 'password': "Password@123"},
+        body: {'email': selectedEmail, 'password': selectedPassword},
         showToast: true,
         context: context,
       );
-      print(response);
 
       if (!mounted) return;
 
@@ -51,108 +232,54 @@ class _LoginScreenState extends State<LoginScreen> {
           response['response']['user'],
           response['response']['token'],
         );
-
-        if (mounted) context.go('/');
+        context.go('/');
       }
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final padding = MediaQuery.of(context).padding;
-
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), // Light grayish background
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 100.w,
-            vertical: padding.top + 24.h,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Welcome\nBack',
-                style: TextStyle(
-                  fontSize: 120.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                  height: 1.2,
-                ),
+      appBar: AppBar(title: const Text('Dummy Login')),
+      body: Padding(
+        padding: EdgeInsets.all(24.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Select a test user:', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 16.h),
+            ...testUsers.map((user) {
+              final isSelected = selectedEmail == user['email'];
+              return ListTile(
+                title: Text(user['label'] ?? ''),
+                subtitle: Text(user['email'] ?? ''),
+                trailing:
+                    isSelected
+                        ? const Icon(Icons.check_circle, color: Colors.green)
+                        : null,
+                onTap: () {
+                  setState(() {
+                    selectedEmail = user['email'];
+                    selectedPassword = user['password'];
+                  });
+                },
+              );
+            }),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed:
+                    _isLoading || selectedEmail == null ? null : _handleLogin,
+                child:
+                    _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text('Login as Selected User'),
               ),
-              SizedBox(height: 40.h),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    buildTextField(
-                      controller: _emailController,
-                      label: 'Email',
-                      hint: 'Enter your email',
-                      icon: Icons.email_outlined,
-                    ),
-                    SizedBox(height: 20.h),
-                    buildTextField(
-                      controller: _passwordController,
-                      label: 'Password',
-                      hint: 'Enter your password',
-                      icon: Icons.lock_outline,
-                      isPassword: true,
-                    ),
-                    SizedBox(height: 32.h),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed:
-                            _isLoading
-                                ? null
-                                : () {
-                                  if (_formKey.currentState?.validate() ??
-                                      false) {
-                                    _handleLogin();
-                                  }
-                                },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          elevation: 2,
-                          shadowColor: AppColors.primary.withOpacity(0.3),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                        ),
-                        child:
-                            _isLoading
-                                ? SizedBox(
-                                  height: 40.h,
-                                  width: 40.w,
-                                  child: const CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white,
-                                    ),
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                                : Text(
-                                  'Sign In',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 40.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

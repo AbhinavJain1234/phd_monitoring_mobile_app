@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:phd_monitoring_mobile_app/configs/form_config.dart';
+import 'package:phd_monitoring_mobile_app/model/user_role.dart';
 import 'package:phd_monitoring_mobile_app/providers/user_provider.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/form_submission_list_screen.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/forms_screen.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/supervisor_allocation/student_detail_page.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/supervisor_allocation/supervisor_allocation_form.dart';
 import 'package:phd_monitoring_mobile_app/screens/home_screen/dashboard_screen/dashboard_screen.dart';
 import 'package:phd_monitoring_mobile_app/screens/home_screen/home_screen.dart';
 import 'package:phd_monitoring_mobile_app/screens/home_screen/notification_screen/motification_screen.dart';
+import 'package:phd_monitoring_mobile_app/screens/home_screen/profile_screen/profile_screen.dart';
 import 'package:phd_monitoring_mobile_app/screens/login_screen/login_screen.dart';
+import 'package:phd_monitoring_mobile_app/screens/publications/publications_screen.dart';
 import 'package:provider/provider.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
@@ -49,7 +57,7 @@ GoRouter createRouter({bool initialLoggedIn = false}) {
             Scaffold(body: Center(child: Text('Error: ${state.error}'))),
     routes: [
       // Login Route
-      GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
+      GoRoute(path: '/login', builder: (context, state) => DummyLoginScreen()),
 
       // Shell Route for HomeScreen with Nested Routes
       ShellRoute(
@@ -79,56 +87,55 @@ GoRouter createRouter({bool initialLoggedIn = false}) {
           ),
         ],
       ),
-      //     // Profile Route
-      //     GoRoute(
-      //       path: '/profile',
-      //       parentNavigatorKey: _rootNavigatorKey,
-      //       builder: (context, state) => const ProfileScreen(),
-      //     ),
+      // Profile Route
+      GoRoute(
+        path: '/profile',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileScreen(),
+      ),
 
-      //     GoRoute(
-      //       path: '/forms',
-      //       parentNavigatorKey: _rootNavigatorKey,
-      //       builder: (context, state) => const FormsScreen(),
-      //       routes: [
-      //         // Direct form type route (existing flow)
-      //         GoRoute(
-      //           path: ':formType',
-      //           builder: (context, state) {
-      //             final formType = state.pathParameters['formType']!;
-      //             final config = formConfigs[formType];
+      GoRoute(
+        path: '/forms',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const FormsScreen(),
+        routes: [
+          // Direct form type route (existing flow)
+          GoRoute(
+            path: ':formType',
+            builder: (context, state) {
+              final formType = state.pathParameters['formType']!;
+              final config = formConfigs[formType];
 
-      //             final userProvider = Provider.of<UserProvider>(
-      //               context,
-      //               listen: false,
-      //             );
-      //             final userRole = userProvider.user?.role ?? UserRole.student;
+              final userProvider = Provider.of<UserProvider>(
+                context,
+                listen: false,
+              );
+              final userRole = userProvider.user?.role ?? UserRole.student;
 
-      //             return FormSubmissionListScreen(
-      //               formType: formType,
-      //               formName: config?.title ?? 'Form',
-      //               role: userRole,
-      //             );
-      //           },
-      //           routes: [
-      //             GoRoute(
-      //               path: ':formId',
-      //               builder: (context, state) {
-      //                 final formType = state.pathParameters['formType']!;
-      //                 final formId = state.pathParameters['formId']!;
-      //                 return _buildFormScreen(formType, formId);
-      //               },
-      //             ),
-      //           ],
-      //         ),
-      //       ],
-      //     ),
-
-      //     GoRoute(
-      //       path: '/publications',
-      //       parentNavigatorKey: _rootNavigatorKey,
-      //       builder: (context, state) => const PublicationPage(),
-      //     ),
+              return FormSubmissionListScreen(
+                formType: formType,
+                formName: config?.title ?? 'Form',
+                role: userRole,
+              );
+            },
+            routes: [
+              GoRoute(
+                path: ':formId',
+                builder: (context, state) {
+                  final formType = state.pathParameters['formType']!;
+                  final formId = state.pathParameters['formId']!;
+                  return _buildFormScreen(formType, formId);
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/publications',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const PublicationsScreen(),
+      ),
       //     GoRoute(
       //       path: '/progress-monitoring',
       //       parentNavigatorKey: _rootNavigatorKey,
@@ -156,19 +163,12 @@ GoRouter createRouter({bool initialLoggedIn = false}) {
   );
 }
 
-// Widget _buildFormScreen(String formType, String formId) {
-//   switch (formType) {
-//     case 'supervisor-allocation':
-//       return SupervisorAllocationForm(
-//         formId: formId,
-//         formType: formType,
-//       );
-//     // Add other form cases here
-//     default:
-//       return Scaffold(
-//         body: Center(
-//           child: Text('Form not found: $formType'),
-//         ),
-//       );
-//   }
-// }
+Widget _buildFormScreen(String formType, String formId) {
+  switch (formType) {
+    case 'supervisor-allocation':
+      return SupervisorAllocationForm(formId: formId, formType: formType);
+    // Add other form cases here
+    default:
+      return StudentDetailsPage();
+  }
+}
