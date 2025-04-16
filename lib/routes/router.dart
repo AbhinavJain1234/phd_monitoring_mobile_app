@@ -5,6 +5,7 @@ import 'package:phd_monitoring_mobile_app/model/user_role.dart';
 import 'package:phd_monitoring_mobile_app/providers/user_provider.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/form_submission_list_screen.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/forms_screen.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/irb_constition/irb_constitution_form.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/supervisor_allocation/student_detail_page.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/supervisor_allocation/supervisor_allocation_form.dart';
 import 'package:phd_monitoring_mobile_app/screens/home_screen/dashboard_screen/dashboard_screen.dart';
@@ -167,6 +168,8 @@ Widget _buildFormScreen(String formType, String formId) {
   switch (formType) {
     case 'supervisor-allocation':
       return SupervisorAllocationForm(formId: formId, formType: formType);
+    case 'irb-constitution':
+      return IRBContitutionForm(formId: formId, formType: formType);
     // Add other form cases here
     default:
       return StudentDetailsPage();
