@@ -10,7 +10,6 @@ import 'package:phd_monitoring_mobile_app/screens/forms/widgets/build_detail_row
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/build_faculty_list.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/collapsible_card.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/form_time_line_widget.dart';
-import 'package:phd_monitoring_mobile_app/screens/forms/widgets/give_recommendation_widget.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/recommended_widget.dart';
 import 'package:phd_monitoring_mobile_app/theme/app_colors.dart';
 
@@ -79,11 +78,7 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildDetailRow(
-                Icons.calendar_month,
-                'Date',
-                data['date'].toString().toString() ?? "hi",
-              ),
+              buildDetailRow(Icons.calendar_month, 'Date', "hi"),
               buildDetailRow(
                 Icons.assignment_ind,
                 'Roll Number',
@@ -327,26 +322,4 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
   void dispose() {
     super.dispose();
   }
-}
-
-Widget _buildChipsList(List<String> items) {
-  return Wrap(
-    spacing: 8,
-    runSpacing: 8,
-    children:
-        items.map((item) {
-          return Container(
-            constraints: const BoxConstraints(maxWidth: 200),
-            child: Chip(
-              label: Text(item, overflow: TextOverflow.ellipsis),
-              backgroundColor: const Color.fromARGB(
-                255,
-                0,
-                0,
-                0,
-              ).withOpacity(0.1),
-            ),
-          );
-        }).toList(),
-  );
 }

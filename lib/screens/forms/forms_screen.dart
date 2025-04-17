@@ -47,6 +47,19 @@ class _FormsScreenState extends State<FormsScreen> {
                 .map((form) => {'form_type': form['form_type']})
                 .toList(),
           );
+          List<Map<String, dynamic>> oddIndexed = [];
+          List<Map<String, dynamic>> evenIndexed = [];
+
+          for (int i = 0; i < forms.length; i++) {
+            if (i % 2 == 0) {
+              oddIndexed.add(forms[i]); // 0, 2, 4...
+            } else {
+              evenIndexed.add(forms[i]); // 1, 3, 5...
+            }
+          }
+
+          // Combine as per required order: 1, 3, 2, 4
+          forms = [...oddIndexed, ...evenIndexed];
         } else {
           _errorMessage = 'Error fetching student forms';
         }

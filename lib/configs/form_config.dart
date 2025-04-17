@@ -46,7 +46,7 @@ final Map<String, FormConfig> formConfigs = {
     color: Colors.brown,
   ),
   'irb-submission': const FormConfig(
-    title: 'IRB Submission',
+    title: 'IRB Revision',
     description: 'Submit research proposal to IRB',
     icon: Icons.upload_file,
     color: Colors.orange,
