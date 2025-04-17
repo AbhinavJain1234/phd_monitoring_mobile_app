@@ -136,6 +136,10 @@ class _GiveRecommendationWidgetState extends State<GiveRecommendationWidget> {
                         'approval': isRecommended,
                         'comments': commentController.text.trim(),
                         'rejection': false,
+                        'rejected':
+                            isRecommended
+                                ? false
+                                : null, // Set to true if not recommended
                       },
                       context: context,
                     );

@@ -176,7 +176,11 @@ class DummyLoginScreen extends StatefulWidget {
 
 class _DummyLoginScreenState extends State<DummyLoginScreen> {
   final List<Map<String, String>> testUsers = [
-    {'label': 'Student 1', 'email': 'oj@g.com', 'password': 'Password@123'},
+    {
+      'label': 'Student 1',
+      'email': 'akarshs@gmail.com',
+      'password': 'Password@123',
+    },
     {'label': 'Student 2', 'email': 'ab@gmail.com', 'password': 'Password@123'},
     {
       'label': 'Supervisor',

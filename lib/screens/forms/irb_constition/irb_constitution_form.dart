@@ -146,7 +146,7 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
           content: Column(
             children: [
               const Text(
-                'Objectives',
+                'List of nominee of the DoRDC in cognate area from the institute',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               buildFacultList(
@@ -158,19 +158,34 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
             ],
           ),
         );
-      case 'phd_coordinator':
+      case 'hod':
         return CollapsibleCard(
-          title: "PhD Coordinator Review",
+          title: 'HOD Review',
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              buildStatusWithDate(
+                'Status: ${data['approvals'][role] == 1 ? "Recommended" : 'Not Recommended'}',
+              ),
+              buildCommentSection(
+                data['comments'][role] ?? 'No comments provided',
+              ),
               const Text(
-                'Supervisors',
+                'List of 3 outside experts proposed by the HOD',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8),
               buildFacultList(
-                data['supervisors']
+                data['outside_experts']
+                    .map((element) => element['name'])
+                    .toList()
+                    .cast<String>(),
+              ),
+              const Text(
+                'Expert(s) recommended by chairman board of the studies of concerned department in cognate area of department:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              buildFacultList(
+                data['chairman_experts']
                     .map((element) => element['name'])
                     .toList()
                     .cast<String>(),
@@ -178,11 +193,30 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
             ],
           ),
         );
-      case 'hod':
-        return RecommendedWidget(
-          title: 'HOD Review',
-          approval: data['approvals'][role],
-          comment: data['comments'][role] ?? 'N/A',
+      case 'dordc':
+        return CollapsibleCard(
+          title: "DoRDC Review",
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildStatusWithDate(
+                'Status: ${data['approvals'][role] == 1 ? "Recommended" : 'Not Recommended'}',
+              ),
+              buildCommentSection(
+                data['comments'][role] ?? 'No comments provided',
+              ),
+              const Text(
+                'One nominee of the DoRDC in cognate area from the institute:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              buildFacultList([data['cognate_expert']['name']]),
+              const Text(
+                'One expert from the IRB panel of outside experts of concerned department to be nominated by the DoRDC',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              buildFacultList([data['outside_expert']['name']]),
+            ],
+          ),
         );
       default:
         return const Center(child: Text('Invalid role'));
@@ -207,11 +241,14 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
           content: Center(child: Text("Fill the form from the website")),
         );
       case 'hod':
-        return GiveRecommendationWidget(
-          postition: role,
-          formType: widget.formType,
-          formId: widget.formId,
-          onSubmit: _fetchFormData,
+        return CollapsibleCard(
+          title: "HoD Review",
+          content: Center(child: Text("Fill the form from the website")),
+        );
+      case 'dordc':
+        return CollapsibleCard(
+          title: "DoRDC Review",
+          content: Center(child: Text("Fill the form from the website")),
         );
       default:
         return const Center(child: Text('Invalid role'));
@@ -228,16 +265,17 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
     );
     // Iterate through the steps until data["role"] is reached
     for (var position in data['steps']) {
-      print("!=-----------1------");
+      print("Position is $position");
       if (position != data["role"]) {
+        print("Before");
         widgets.add(buildRoleWidgetsFor(position));
       } else {
         if (position == data['stage'] ||
             position == 'faculty' && data['stage'] == 'supervisor') {
-          print("!=--------2---------");
+          print("Current Stage");
           widgets.add(buildCurrentRoleWidgetsFor(position));
         } else {
-          print("!=-------3---------");
+          print("Before 2");
           widgets.add(buildRoleWidgetsFor(position));
         }
         break;

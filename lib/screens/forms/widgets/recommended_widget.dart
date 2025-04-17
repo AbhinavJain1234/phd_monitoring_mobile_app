@@ -15,14 +15,14 @@ class RecommendedWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CollapsibleCard(
-      title: 'PhD Coordinator Review',
+      title: title,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildStatusWithDate(
             'Status: ${approval == 1 ? "Recommended" : 'Not Recommended'}',
           ),
-          buildCommentSection(comment ?? 'N/A'),
+          buildCommentSection(comment),
         ],
       ),
     );
