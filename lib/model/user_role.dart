@@ -3,6 +3,7 @@ enum UserRole {
   student,
   faculty,
   phdCoordinator,
+  external,
   hod,
   dra,
   dordc,

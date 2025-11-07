@@ -78,7 +78,8 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildDetailRow(Icons.calendar_month, 'Date', "hi"),
+              buildDetailRow(Icons.calendar_month, 'Date',
+                  formatDateTime(data['created_at'])),
               buildDetailRow(
                 Icons.assignment_ind,
                 'Roll Number',
@@ -88,7 +89,7 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
               buildDetailRow(Icons.person, 'Gender', data['gender'].toString()),
               buildDetailRow(
                 Icons.calendar_today,
-                'Admission Date',
+                'Date of Admission',
                 formatDateTime(data['date_of_registration']),
               ),
               buildDetailRow(Icons.home_work, 'Department', data['department']),
@@ -256,6 +257,7 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
       FormTimeLineWidget(
         steps: data['steps'],
         currentStep: data['current_step'],
+        history: data['history'],
       ),
     );
     // Iterate through the steps until data["role"] is reached
@@ -291,30 +293,29 @@ class _IRBContitutionFormState extends State<IRBContitutionForm> {
         ),
         elevation: 0,
       ),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _errorMessage.isNotEmpty
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _errorMessage.isNotEmpty
               ? Center(
-                child: Text(
-                  _errorMessage,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              )
+                  child: Text(
+                    _errorMessage,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                )
               : RefreshIndicator(
-                onRefresh: _fetchFormData,
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: EdgeInsets.all(20.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widgets,
+                  onRefresh: _fetchFormData,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Padding(
+                      padding: EdgeInsets.all(20.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: widgets,
+                      ),
                     ),
                   ),
                 ),
-              ),
     );
   }
 

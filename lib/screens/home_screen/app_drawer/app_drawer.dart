@@ -16,7 +16,7 @@ class AppDrawer extends StatelessWidget {
     final user = userProvider.user;
     // final String imageUrl = user.imageUrl;
     const String imageUrl =
-        'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg';
+        'https://w0.peakpx.com/wallpaper/108/899/HD-wallpaper-thor-thor-superheroes-deviantart.jpg';
 
     if (user == null) {
       return const Drawer(
@@ -39,10 +39,9 @@ class AppDrawer extends StatelessWidget {
                   backgroundColor: AppColors.primary.withOpacity(0.2),
                   backgroundImage:
                       imageUrl.isNotEmpty ? const NetworkImage(imageUrl) : null,
-                  child:
-                      (imageUrl.isEmpty)
-                          ? const Icon(Icons.person, color: AppColors.primary)
-                          : null,
+                  child: (imageUrl.isEmpty)
+                      ? const Icon(Icons.person, color: AppColors.primary)
+                      : null,
                 ),
                 const SizedBox(height: 8),
                 Text(

@@ -4,7 +4,7 @@ import 'package:phd_monitoring_mobile_app/screens/forms/widgets/collapsible_card
 class RecommendedWidget extends StatelessWidget {
   final String title;
   final int approval;
-  final String comment;
+  final String? comment;
   const RecommendedWidget({
     super.key,
     required this.title,
@@ -22,7 +22,9 @@ class RecommendedWidget extends StatelessWidget {
           buildStatusWithDate(
             'Status: ${approval == 1 ? "Recommended" : 'Not Recommended'}',
           ),
-          buildCommentSection(comment),
+          // Only show comments section if comment is not null and not empty
+          if (comment != null && comment!.isNotEmpty)
+            buildCommentSection(comment!),
         ],
       ),
     );

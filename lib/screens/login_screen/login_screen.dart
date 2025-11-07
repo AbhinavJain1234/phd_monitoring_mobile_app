@@ -178,13 +178,22 @@ class _DummyLoginScreenState extends State<DummyLoginScreen> {
   final List<Map<String, String>> testUsers = [
     {
       'label': 'Student 1',
-      'email': 'akarshs@gmail.com',
+      'email': 'a@gmail.com',
       'password': 'Password@123',
     },
-    {'label': 'Student 2', 'email': 'ab@gmail.com', 'password': 'Password@123'},
+    {
+      'label': 'Bhavya Bhalla',
+      'email': 'bb@gmail.com',
+      'password': 'Password@123'
+    },
     {
       'label': 'Supervisor',
       'email': '1000927@thapar.edu',
+      'password': 'Password@123',
+    },
+    {
+      'label': 'Chinamy',
+      'email': '1016614@thapar.edu',
       'password': 'Password@123',
     },
     {'label': 'HOD', 'email': '1000927@thapar.edu', 'password': 'Password@123'},
@@ -264,13 +273,12 @@ class _DummyLoginScreenState extends State<DummyLoginScreen> {
                   return ListTile(
                     title: Text(user['label'] ?? ''),
                     subtitle: Text(user['email'] ?? ''),
-                    trailing:
-                        isSelected
-                            ? const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                            )
-                            : null,
+                    trailing: isSelected
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                          )
+                        : null,
                     onTap: () {
                       setState(() {
                         selectedEmail = user['email'];
@@ -281,17 +289,15 @@ class _DummyLoginScreenState extends State<DummyLoginScreen> {
                 },
               ),
             ),
-
             const Spacer(),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed:
                     _isLoading || selectedEmail == null ? null : _handleLogin,
-                child:
-                    _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text('Login as Selected User'),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('Login as Selected User'),
               ),
             ),
           ],

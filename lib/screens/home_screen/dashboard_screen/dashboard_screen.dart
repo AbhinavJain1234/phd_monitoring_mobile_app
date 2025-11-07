@@ -13,8 +13,9 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  var dashboardData = null;
+  var dashboardData;
 
+  @override
   void initState() {
     super.initState();
     fetchDashboardData(context);

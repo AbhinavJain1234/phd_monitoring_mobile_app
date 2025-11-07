@@ -1,5 +1,6 @@
 //optimnized
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phd_monitoring_mobile_app/constants/url.dart';
 import 'package:phd_monitoring_mobile_app/functions/fetch_data.dart';
 import 'package:phd_monitoring_mobile_app/functions/format_date_time.dart';
@@ -129,7 +130,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 ],
               ),
               onTap: () {
-                // => handleNotificationTap(notification, context)
+                print("link check: ${notification['link']}");
+                final link = notification['link'] as String?;
+                if (link == null || link.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No link available for this notification'),
+                    ),
+                  );
+                  return;
+                }
+                context.push(link); // Keep push for other routes
               },
             ),
           );

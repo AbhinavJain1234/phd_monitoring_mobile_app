@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:phd_monitoring_mobile_app/constants/url.dart';
 import 'package:phd_monitoring_mobile_app/functions/fetch_data.dart';
 import 'package:phd_monitoring_mobile_app/functions/format_date_time.dart';
+import 'package:phd_monitoring_mobile_app/functions/opendocument.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/widgets/build_data_list.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/build_detail_row.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/build_faculty_list.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/collapsible_card.dart';
@@ -13,8 +15,8 @@ import 'package:phd_monitoring_mobile_app/screens/forms/widgets/recommended_widg
 import 'package:phd_monitoring_mobile_app/theme/app_colors.dart';
 
 //Manage form not yet assigned
-class SupervisorAllocationForm extends StatefulWidget {
-  const SupervisorAllocationForm({
+class IRBRevisionForm extends StatefulWidget {
+  const IRBRevisionForm({
     super.key,
     required this.formId,
     required this.formType,
@@ -24,11 +26,10 @@ class SupervisorAllocationForm extends StatefulWidget {
   final String formType;
 
   @override
-  State<SupervisorAllocationForm> createState() =>
-      _SupervisorAllocationFormState();
+  State<IRBRevisionForm> createState() => _IRBRevisionFormState();
 }
 
-class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
+class _IRBRevisionFormState extends State<IRBRevisionForm> {
   List<Widget> widgets = [];
   Map<String, dynamic> data = {};
   bool _isLoading = true;
@@ -86,60 +87,69 @@ class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
               buildDetailRow(Icons.person, 'Name', data['name']),
               buildDetailRow(
                 Icons.calendar_today,
-                'Admission Date',
+                'Date of Admission',
                 formatDateTime(data['date_of_registration']),
               ),
-              buildDetailRow(Icons.email, 'Email', data['email']),
-              buildDetailRow(Icons.phone, 'Mobile', data['phone'].toString()),
-              const SizedBox(height: 16),
+              buildDetailRow(Icons.home_work, 'Department', data['department']),
+              buildDetailRow(Icons.grade, 'CGPA', data['cgpa'].toString()),
+              buildDetailRow(Icons.email, 'Email', data['email'].toString()),
+              buildDetailRow(
+                Icons.menu_book,
+                'Previous Proposed Title of PhD Thesis',
+                data['phd_title'].toString(),
+              ),
+              buildDetailRow(
+                Icons.menu_book,
+                'Revised Title of Phd Thesis',
+                data['revised_phd_title'].toString(),
+              ),
               const Text(
-                'Research Areas',
+                'Revised PhD Objectives',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8),
-              _buildChipsList(data['broad_area_of_research'].cast<String>()),
-              const SizedBox(height: 16),
-              const Text(
-                'Tentative Supervisors',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              buildDataList(data['revised_phd_objectives'].cast<String>()),
+              ElevatedButton(
+                onPressed: () async {
+                  if (data.containsKey('revised_irb_pdf') &&
+                      data['revised_irb_pdf'] != null) {
+                    await downloadAndOpenPdf(data['revised_irb_pdf'], context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('PDF path not available')),
+                    );
+                  }
+                },
+                child: const Text('View Revised IRB PDF File'),
               ),
-              const SizedBox(height: 8),
-              buildFacultList(
-                data['prefrences']
-                    .map((element) => element['name'])
-                    .toList()
-                    .cast<String>(),
+              buildDetailRow(
+                Icons.calendar_today,
+                'Date of Admission',
+                formatDateTime(data['date_of_irb']),
               ),
             ],
           ),
         );
-
-      case 'phd_coordinator':
-        return CollapsibleCard(
-          title: "PhD Coordinator Review",
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Supervisors',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              buildFacultList(
-                data['supervisors']
-                    .map((element) => element['name'])
-                    .toList()
-                    .cast<String>(),
-              ),
-            ],
-          ),
-        );
+      //Title Hardcoded
+      case 'faculty':
+        return RecommendedWidget(
+            title: "Supervisor Review",
+            approval: data['approvals']['supervisor'],
+            comment: data['comments']['supervisor']);
+      case 'external':
+        return RecommendedWidget(
+            title: "External Member Review",
+            approval: data['approvals'][role],
+            comment: data['comments'][role]);
       case 'hod':
         return RecommendedWidget(
-          title: 'HOD Review',
-          approval: data['approvals'][role],
-          comment: data['comments'][role] ?? 'N/A',
-        );
+            title: "HOD Review",
+            approval: data['approvals'][role],
+            comment: data['comments'][role]);
+      case 'dordc':
+        return RecommendedWidget(
+            title: "DoRDC Review",
+            approval: data['approvals'][role],
+            comment: data['comments'][role]);
       default:
         return const Center(child: Text('Invalid role'));
     }
@@ -152,12 +162,18 @@ class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
           title: "Student Review",
           content: Center(child: Text("Fill the form from the website")),
         );
+      case 'faculty':
+        return CollapsibleCard(
+          title: "Supervisor Review",
+          content: Center(child: Text("Fill the form from the website")),
+        );
       case 'phd_coordinator':
         return CollapsibleCard(
           title: "PhD Coordinator Review",
           content: Center(child: Text("Fill the form from the website")),
         );
       case 'hod':
+      case 'dordc':
         return GiveRecommendationWidget(
           postition: role,
           formType: widget.formType,
@@ -175,17 +191,22 @@ class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
       FormTimeLineWidget(
         steps: data['steps'],
         currentStep: data['current_step'],
-        history: data['history'] ?? [],
+        history: data['history'],
       ),
     );
     // Iterate through the steps until data["role"] is reached
     for (var position in data['steps']) {
+      print("Position is $position");
       if (position != data["role"]) {
+        print("Before");
         widgets.add(buildRoleWidgetsFor(position));
       } else {
-        if (position == data['stage']) {
+        if (position == data['stage'] ||
+            position == 'faculty' && data['stage'] == 'supervisor') {
+          print("Current Stage");
           widgets.add(buildCurrentRoleWidgetsFor(position));
         } else {
+          print("Before 2");
           widgets.add(buildRoleWidgetsFor(position));
         }
         break;
@@ -197,7 +218,7 @@ class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Supervisor Allocation Form"),
+        title: const Text("IRB Revision Form"),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         leading: IconButton(
@@ -236,25 +257,4 @@ class _SupervisorAllocationFormState extends State<SupervisorAllocationForm> {
   void dispose() {
     super.dispose();
   }
-}
-
-Widget _buildChipsList(List<String> items) {
-  return Wrap(
-    spacing: 8,
-    runSpacing: 8,
-    children: items.map((item) {
-      return Container(
-        constraints: const BoxConstraints(maxWidth: 200),
-        child: Chip(
-          label: Text(item, overflow: TextOverflow.ellipsis),
-          backgroundColor: const Color.fromARGB(
-            255,
-            0,
-            0,
-            0,
-          ).withOpacity(0.1),
-        ),
-      );
-    }).toList(),
-  );
 }

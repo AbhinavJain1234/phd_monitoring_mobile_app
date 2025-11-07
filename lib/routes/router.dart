@@ -6,11 +6,14 @@ import 'package:phd_monitoring_mobile_app/providers/user_provider.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/form_submission_list_screen.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/forms_screen.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/irb_constition/irb_constitution_form.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/irb_revision/irb_revision_form.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/status_change/status_change_form.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/supervisor_allocation/student_detail_page.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/supervisor_allocation/supervisor_allocation_form.dart';
+import 'package:phd_monitoring_mobile_app/screens/forms/supervisor_change/supervisor_change_form.dart';
 import 'package:phd_monitoring_mobile_app/screens/home_screen/dashboard_screen/dashboard_screen.dart';
 import 'package:phd_monitoring_mobile_app/screens/home_screen/home_screen.dart';
-import 'package:phd_monitoring_mobile_app/screens/home_screen/notification_screen/motification_screen.dart';
+import 'package:phd_monitoring_mobile_app/screens/home_screen/notification_screen/notification_screen.dart';
 import 'package:phd_monitoring_mobile_app/screens/home_screen/profile_screen/profile_screen.dart';
 import 'package:phd_monitoring_mobile_app/screens/login_screen/login_screen.dart';
 import 'package:phd_monitoring_mobile_app/screens/publications/publications_screen.dart';
@@ -53,9 +56,8 @@ GoRouter createRouter({bool initialLoggedIn = false}) {
       // Allow access to all other pages when logged in
       return null;
     },
-    errorBuilder:
-        (context, state) =>
-            Scaffold(body: Center(child: Text('Error: ${state.error}'))),
+    errorBuilder: (context, state) =>
+        Scaffold(body: Center(child: Text('Error: ${state.error}'))),
     routes: [
       // Login Route
       GoRoute(path: '/login', builder: (context, state) => DummyLoginScreen()),
@@ -63,20 +65,19 @@ GoRouter createRouter({bool initialLoggedIn = false}) {
       // Shell Route for HomeScreen with Nested Routes
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-        builder:
-            (context, state, child) => HomeScreen(
-              child: child,
-              onLogout: () async {
-                final userProvider = Provider.of<UserProvider>(
-                  context,
-                  listen: false,
-                );
-                await userProvider.logout();
-                if (context.mounted) {
-                  context.go('/login');
-                }
-              },
-            ),
+        builder: (context, state, child) => HomeScreen(
+          child: child,
+          onLogout: () async {
+            final userProvider = Provider.of<UserProvider>(
+              context,
+              listen: false,
+            );
+            await userProvider.logout();
+            if (context.mounted) {
+              context.go('/login');
+            }
+          },
+        ),
         routes: [
           GoRoute(
             path: '/',
@@ -170,6 +171,12 @@ Widget _buildFormScreen(String formType, String formId) {
       return SupervisorAllocationForm(formId: formId, formType: formType);
     case 'irb-constitution':
       return IRBContitutionForm(formId: formId, formType: formType);
+    case 'irb-submission':
+      return IRBRevisionForm(formId: formId, formType: formType);
+    case 'supervisor-change':
+      return SupervisorChangeForm(formId: formId, formType: formType);
+    case 'status-change':
+      return StatusChangeForm(formId: formId, formType: formType);
     // Add other form cases here
     default:
       return StudentDetailsPage();
