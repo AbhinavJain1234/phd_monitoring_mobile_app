@@ -28,7 +28,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       context: context,
       showToast: false,
     );
-    print(result);
+    print("Result: $result");
 
     if (result['success']) {
       setState(() {
@@ -41,17 +41,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final userRole = userProvider.user?.role;
-    print(userProvider.user?.role.toString());
 
     // Determine if the role is any type of faculty
-    bool isFaculty =
-        userRole == UserRole.phdCoordinator ||
+    bool isFaculty = userRole == UserRole.phdCoordinator ||
         userRole == UserRole.faculty ||
         userRole == UserRole.hod ||
         userRole == UserRole.dra ||
         userRole == UserRole.dordc ||
         userRole == UserRole.director;
 
-    return Scaffold(body: Center(child: Text("DASHBOARD")));
+    return Scaffold(
+        body: Center(
+      child: Text(
+        "DASHBOARD",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ));
   }
 }

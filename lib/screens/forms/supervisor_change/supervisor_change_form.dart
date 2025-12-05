@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:phd_monitoring_mobile_app/constants/url.dart';
 import 'package:phd_monitoring_mobile_app/functions/fetch_data.dart';
 import 'package:phd_monitoring_mobile_app/functions/format_date_time.dart';
-import 'package:phd_monitoring_mobile_app/functions/opendocument.dart';
-import 'package:phd_monitoring_mobile_app/screens/forms/widgets/build_data_list.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/build_detail_row.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/build_faculty_list.dart';
 import 'package:phd_monitoring_mobile_app/screens/forms/widgets/collapsible_card.dart';
